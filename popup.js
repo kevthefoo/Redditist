@@ -1,4 +1,4 @@
-// Popup script for Reddit Summarizer
+// Popup script for Redditist
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Pages
@@ -44,13 +44,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     mainPage.classList.remove('hidden');
   });
 
-  // Load saved API key
-  const stored = await chrome.storage.local.get(['openaiApiKey']);
+  // Load saved API key and language
+  const stored = await chrome.storage.local.get(['openaiApiKey', 'summaryLanguage']);
   if (stored.openaiApiKey) {
     apiKeyInput.value = stored.openaiApiKey;
     apiKeyStatus.textContent = 'API key saved';
     apiKeyStatus.className = 'status success';
   }
+  if (stored.summaryLanguage) {
+    languageSelect.value = stored.summaryLanguage;
+  }
+
+  // Save language when changed
+  languageSelect.addEventListener('change', async () => {
+    await chrome.storage.local.set({ summaryLanguage: languageSelect.value });
+  });
 
   // Save API key
   saveApiKeyBtn.addEventListener('click', async () => {
